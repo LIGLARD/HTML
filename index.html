@@ -3359,5 +3359,37 @@
       }
     </style>
   </veepn-lock-screen>
+async function fetchBookmarks() {
+  const apiUrl = 'https://vexillostools.netlify.app/api/bookmarks'; // Replace with actual endpoint
 
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add auth header if required
+        // 'Authorization': 'Bearer YOUR_TOKEN' 
+      },
+      credentials: 'include' // Include cookies for session-based auth
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Access specific bookmark info (adjust based on actual structure)
+    console.log('Bookmark Data:', data);
+
+    return data;
+
+  } catch (error) {
+    console.error('Fetch failed:', error.message);
+    throw error;
+  }
+}
+
+// Call the function
+fetchBookmarks();
 </body></html>
