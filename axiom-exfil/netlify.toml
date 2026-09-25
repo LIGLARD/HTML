@@ -1,9 +1,6 @@
-[functions]
-  exfil = { path = "exfil" }
-
 [[headers]]
-  for = "/axiom-exfil/index.html"
+  for = "/"
   values = {
-    "Access-Control-Allow-Origin" = "*",
+    "Access-Control-Allow-Origin" = "https://axiom.trade",
     "Content-Type" = "text/html"
   }
