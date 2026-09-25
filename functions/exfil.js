@@ -1,19 +1,23 @@
-// functions/exfil.js
-exports.handler = async (event, context) => {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head><title>Axiom Exfil</title></head>
-      <body>Exfiltrated!</body>
-    </html>
-  `;
+// exfil.js
 
-  return {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*", // CORS
-      "Content-Type": "text/html"          // Required for HTML
-    },
-    body: html
-  };
-};
+async function fetchData() {
+  try {
+    const response = await fetch('/.netlify/functions/proxy-vexillos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        url: 'https://vexillos.netlify.app/wallets' // 👈 THIS IS WHAT YOU PUT HERE
+      })
+    });
+
+    const data = await response.text();
+    console.log(data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Call it
+fetchData();
