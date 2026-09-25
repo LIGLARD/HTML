@@ -1,7 +1,9 @@
-[[redirects]]
-  from = "/"
-  to = "/index.html"
-  status = 200
-  [headers]
-    Access-Control-Allow-Origin = ""
-    Content-Type = "text/html; charset=utf-8"
+[functions]
+  exfil = { path = "exfil" }
+
+[[headers]]
+  for = "/axiom-exfil/index.html"
+  values = {
+    "Access-Control-Allow-Origin" = "*",
+    "Content-Type" = "text/html"
+  }
