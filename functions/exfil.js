@@ -2,13 +2,13 @@
 
 async function fetchData() {
   try {
-    const response = await fetch('/.netlify/functions/proxy-vexillos', {
+    const response = await fetch('/.netlify/functions/proxy-Zelos', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        url: 'https://vexillos.netlify.app/wallets' // 👈 THIS IS WHAT YOU PUT HERE
+        url: 'https://Zelos.netlify.app/wallets' // 👈 THIS IS WHAT YOU PUT HERE
       })
     });
 

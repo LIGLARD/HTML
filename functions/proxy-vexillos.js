@@ -1,4 +1,4 @@
-// functions/proxy-vexillos.js
+// functions/proxy-Zelos.js
 
 const fetch = require('node-fetch');
 
