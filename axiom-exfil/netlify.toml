@@ -1,6 +1,0 @@
-[[headers]]
-  for = "/"
-  values = {
-    "Access-Control-Allow-Origin" = "https://axiom.trade",
-    "Content-Type" = "text/html"
-  }
